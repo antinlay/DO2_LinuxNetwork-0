@@ -58,3 +58,56 @@ Access IP range: 10.10.0.1 - 10.10.63.254
 |10.10.10.10|TRUE|
 |10.10.100.1|FALSE|
 |10.10.1.255|TRUE|
+
+## Part 2. Static routing between two machines
+#### Start two virtual machines (hereafter -- ws1 and ws2 View existing network interfaces with the ip a command
+![2.1.1](../misc/images/report_img/2.0.1.png)
+
+* enp0s3 name interface for ws1 and ws2
+
+#### Describe the network interface corresponding to the internal network on both machines and set the following addresses and masks: ws1 - 192.168.100.10, mask */16 *, ws2 - 172.24.116.8, mask /12
+
+`sudo nano etc/netplan/00-installer-config.yaml`
+* ws1:
+
+![2.0.2](../misc/images/report_img/2.0.2.png)
+
+* ws2:
+
+![2.0.3](../misc/images/report_img/2.0.3.png)
+
+`sudo netplan apply`
+
+* ws1:
+
+![2.0.4](../misc/images/report_img/2.0.4.png)
+
+* ws2:
+
+![2.0.5](../misc/images/report_img/2.0.5.png)
+
+### 2.1. Adding a static route manually
+
+* ws1:
+
+`sudo ip r add 172.24.116.8 dev enp0s3`
+`sudo ping 192.168.100.10`
+
+![2.1.1](../misc/images/report_img/2.1.1.png)
+
+* ws2:
+
+`sudo ip r add 192.168.100.10 dev enp0s3`
+`sudo ping 172.24.116.8`
+
+![2.1.2](../misc/images/report_img/2.1.2.png)
+
+### 2.2. Adding a static route with saving
+
+* ws1:
+
+![2.2.1](../misc/images/report_img/2.2.1.png)
+
+* ws2:
+
+![2.2.2](../misc/images/report_img/2.2.2.png)
