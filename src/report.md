@@ -125,3 +125,27 @@ Access IP range: 10.10.0.1 - 10.10.63.254
 * ws2 : `sudo ip route flush table main` `sudo ip route flush cache` `sudo netplan apply` `ping 192.168.100.10` (`ip route` commands for apply settings without restart network service)
 
 ![2.2.4](../misc/images/report_img/2.2.4.png)
+
+## Part 3. iperf3 utility
+
+### 3.1. Connection speed
+
+8 Mbps = 1 MB/s, 100 MB/s = 819200 Kbps, 1 Gbps = 1024 Mbps
+
+### 3.2. iperf3 utility
+
+* ws1: `sudo iperf3 -c 172.24.166.8 -p 5201`
+
+![3.2.1](../misc/images/report_img/3.2.1.png)
+
+* ws2: `sudo iperf3 -s`
+
+![3.2.2](../misc/images/report_img/3.2.2.png)
+
+* ws2: `sudo iperf3 -c 192.168.100.10 -f M`
+
+![3.2.3](../misc/images/report_img/3.2.3.png)
+
+* ws1: `sudo iperf3 -s`
+
+![3.2.4](../misc/images/report_img/3.2.4.png)
