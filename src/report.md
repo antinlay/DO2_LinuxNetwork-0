@@ -104,6 +104,10 @@ Access IP range: 10.10.0.1 - 10.10.63.254
 
 ### 2.2. Adding a static route with saving
 
+[ROUTES](https://linuxconfig.org/how-to-add-static-route-with-netplan-on-ubuntu-20-04-focal-fossa-linux)
+
+`sudo nano etc/netplan/00-installer-config.yaml`
+
 * ws1:
 
 ![2.2.1](../misc/images/report_img/2.2.1.png)
@@ -111,3 +115,13 @@ Access IP range: 10.10.0.1 - 10.10.63.254
 * ws2:
 
 ![2.2.2](../misc/images/report_img/2.2.2.png)
+
+* ws1 :
+`sudo netplan apply`
+`ping 172.24.116.8`
+
+![2.2.3](../misc/images/report_img/2.2.3.png)
+
+* ws2 : `sudo ip route flush table main` `sudo ip route flush cache` `sudo netplan apply` `ping 192.168.100.10` (`ip route` commands for apply settings without restart network service)
+
+![2.2.4](../misc/images/report_img/2.2.4.png)
