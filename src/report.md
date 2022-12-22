@@ -61,7 +61,7 @@ Access IP range: 10.10.0.1 - 10.10.63.254
 
 ## Part 2. Static routing between two machines
 #### Start two virtual machines (hereafter -- ws1 and ws2 View existing network interfaces with the ip a command
-![2.1.1](../misc/images/report_img/2.0.1.png)
+![2.0.1](../misc/images/report_img/2.0.1.png)
 
 * enp0s3 name interface for ws1 and ws2
 
@@ -180,8 +180,12 @@ ws1:
 iptables -I OUTPUT -p icmp --icmp-type echo-reply -j REJECT
 # and an allow rule is written at the end (this applies to points 4 and 5)
 iptables -A OUTPUT -p icmp --icmp-type echo-reply -j ACCEPT
+service iptables save
 
 ```
+![4.1.1](../misc/images/report_img/4.1.1.png)
+
+
 ws2:
 ```shell
 # iptables -{A|I} {INPUT|OUTPUT} -p icmp --icmp-type {echo-reply|echo-request} -j {ACCEPT|REJECT|DROP}
@@ -189,10 +193,28 @@ ws2:
 iptables -I OUTPUT -p icmp --icmp-type echo-reply -j ACCEPT
 # and a deny rule is written at the end (this applies to points 4 and 5)
 iptables -A OUTPUT -p icmp --icmp-type echo-reply -j REJECT
-
+service iptables save
 ```
-- Add screenshots of the */etc/firewall* file for each machine to the report.
+![4.1.3](../misc/images/report_img/4.1.3.png)
+
 ##### Run the files on both machines with `chmod +x /etc/firewall.sh` and `/etc/firewall.sh` commands.
+ws1:
+
+![4.1.2](../misc/images/report_img/4.1.2.png)
+ws2:
+
+![4.1.4](../misc/images/report_img/4.1.4.png)
+
+ANOMALY
+![4.1.5](../misc/images/report_img/4.1.5.png)
+REJECT NOT SUPPORTED
+
+TRY #2
+
+![4.1.6](../misc/images/report_img/4.1.6.png)
+![4.1.7](../misc/images/report_img/4.1.8.png)
+
+
 - Add screenshots of both files running to the report.
 - Describe in the report the difference between the strategies used in the first and second files.
 Add screenshots of both files running to the report.
