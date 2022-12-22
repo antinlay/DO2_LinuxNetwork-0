@@ -149,3 +149,51 @@ Access IP range: 10.10.0.1 - 10.10.63.254
 * ws1: `sudo iperf3 -s`
 
 ![3.2.4](../misc/images/report_img/3.2.4.png)
+
+## Part 4. Network firewall
+
+`sudo ufw enable`
+
+![4.0](../misc/images/report_img/4.0.png)
+
+
+### 4.1. iptables utility
+Create a /etc/firewall.sh file simulating the firewall on ws1 and ws2:
+##### 3) open access on machines for port 22 (ssh) and port 80 (http)
+```shell
+#!/bin/sh
+
+# Deleting all the rules in the "filter" table (default).
+iptables -F
+iptables –X
+# open access on machines for port 22 (ssh)
+iptables -A INPUT -p tcp --dport 22 -j ACCEPT
+iptables -A OUTPUT -p tcp --dport 22 -j ACCEPT
+# and port 80 (http)
+iptables -A INPUT -p tcp --dport 80 -j ACCEPT
+iptables -A OUTPUT -p tcp --dport 80 -j ACCEPT
+```
+ws1:
+```shell
+# iptables -{A|I} {INPUT|OUTPUT} -p icmp --icmp-type {echo-reply|echo-request} -j {ACCEPT|REJECT|DROP}
+# on ws1 apply a strategy where a deny rule is written at the beginning
+iptables -I OUTPUT -p icmp --icmp-type echo-reply -j REJECT
+# and an allow rule is written at the end (this applies to points 4 and 5)
+iptables -A OUTPUT -p icmp --icmp-type echo-reply -j ACCEPT
+
+```
+ws2:
+```shell
+# iptables -{A|I} {INPUT|OUTPUT} -p icmp --icmp-type {echo-reply|echo-request} -j {ACCEPT|REJECT|DROP}
+# on ws2 apply a strategy where an allow rule is written at the beginning 
+iptables -I OUTPUT -p icmp --icmp-type echo-reply -j ACCEPT
+# and a deny rule is written at the end (this applies to points 4 and 5)
+iptables -A OUTPUT -p icmp --icmp-type echo-reply -j REJECT
+
+```
+- Add screenshots of the */etc/firewall* file for each machine to the report.
+##### Run the files on both machines with `chmod +x /etc/firewall.sh` and `/etc/firewall.sh` commands.
+- Add screenshots of both files running to the report.
+- Describe in the report the difference between the strategies used in the first and second files.
+Add screenshots of both files running to the report.
+Describe in the report the difference between the strategies used in the first and second files
