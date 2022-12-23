@@ -253,3 +253,45 @@ iptables -A OUTPUT -p icmp --icmp-type echo-reply -j DROP
 
 ##### Save dumps of the virtual machine images
 **p.s. Do not upload dumps to git under any circumstances!**
+
+## Part 5. Static network routing
+
+`-` So far we have only connected two machines, but now it's time for static routing of the whole network.
+
+**== Task ==**
+
+Network: \
+<img src="../misc/images/part5_network.png" alt="part5_network" width="800"/>
+
+##### Start five virtual machines (3 workstations (ws11, ws21, ws22) and 2 routers (r1, r2))
+
+Minimal config for VM: \
+<img src="../misc/images/report_img/5.0.1.png" alt="part5_network" width="800"/>
+
+Clone VM: \
+<img src="../misc/images/report_img/5.0.png"/>
+
+#### 5.1. Configuration of machine addresses
+##### Set up the machine configurations in *etc/netplan/00-installer-config.yaml* according to the network in the picture.
+*etc/netplan/00-installer-config.yaml*
+#### ws11:
+![5.1.1](../misc/images/report_img/5.1.1.png)
+#### ws21:
+![5.1.2](../misc/images/report_img/5.1.2.png)
+#### ws22:
+![5.1.3](../misc/images/report_img/5.1.3.png)
+#### r1:
+![5.1.4](../misc/images/report_img/5.1.4.png)
+#### r2:
+![5.1.5](../misc/images/report_img/5.1.5.png)
+##### Restart the network service. If there are no errors, check that the machine address is correct with the `ip -4 a`command. Also ping ws22 from ws21. Similarly ping r1 from ws11.
+#### ws11:
+![5.1.6](../misc/images/report_img/5.1.6.png)
+#### ws21:
+![5.1.7](../misc/images/report_img/5.1.7.png)
+#### ws22:
+![5.1.8](../misc/images/report_img/5.1.8.png)
+#### r1:
+![5.1.9](../misc/images/report_img/5.1.9.png)
+#### r2:
+![5.1.10](../misc/images/report_img/5.1.10.png)
