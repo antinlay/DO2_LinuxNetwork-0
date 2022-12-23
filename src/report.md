@@ -203,3 +203,53 @@ iptables -A OUTPUT -p icmp --icmp-type echo-reply -j DROP
 ![4.1.4](../misc/images/report_img/4.1.4.png)
 
 #### If a rule does not match the packet, the packet is passed to the next rule. If a rule does match the packet, the rule takes the action indicated by the target/verdict, which may result in the packet being allowed to continue along the chain or it may not. On ws1 first rule `DROP` break the chain also ws2 first rule `ACCEPT` break the chain but ping paсkets go to ws2.
+
+### SSH
+
+#### Work in VM from VirtualBox very difficult and now we connect second adapter (NAT) and connect VM to host machine and internet.
+
+1) Enable second network adapter NAT:
+
+![0.0](../misc/images/report_img/0.0.png)
+
+2) Start VM:
+
+`ip a`
+
+![0.1](../misc/images/report_img/0.1.png)
+
+
+##### `enp0s8` interface second adapter but now is not working. Go to netplan setting and set parameters for this interface:
+
+![0.2](../misc/images/report_img/0.2.png)
+
+##### Apply command: `sudo netplan apply`
+
+![0.3](../misc/images/report_img/0.3.png)
+
+##### Now we see ip address `enp0s8`. But we can't ssh connect directly to this ip. Solution is forwarding port `22` on ip `10.0.3.15` to port `2223` on `127.0.0.1`
+
+![0.4](../misc/images/report_img/0.4.png)
+
+`sudo reboot` - executing command 
+
+##### Try to connect ws2 from ssh `sudo ssh -p 2223 janiecee@127.0.0.1`
+
+![0.5](../misc/images/report_img/0.5.png)
+
+##### Ready! Lat's go to part 4.2
+
+#### 4.2. **nmap** utility
+
+`apt install nmap`
+##### Use **ping** command to find a machine which is not pinged, then use **nmap** utility to show that the machine host is up
+*Check: nmap output should say: `Host is up`*.
+
+![4.2.1](../misc/images/report_img/4.2.1.png)
+
+
+
+- Add screenshots with the call and output of the **ping** and **nmap** commands to the report.
+
+##### Save dumps of the virtual machine images
+**p.s. Do not upload dumps to git under any circumstances!**
