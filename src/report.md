@@ -372,4 +372,27 @@ With `ip_forward=1`, "Hmm, this is not for me. But I know where the recipient is
 ![5.4.4](../misc/images/report_img/5.4.4.png)
 ##### Run `ip r list 10.10.0.0/[netmask]` and `ip r list 0.0.0.0/0` commands on ws11.
 ![5.4.5](../misc/images/report_img/5.4.5.png)
-- Explain in the report why a different route other than 0.0.0.0/0 had been selected for 10.10.0.0/18 although it could be the default route. Because a more optimal route based on system metrics. 
+- Explain in the report why a different route other than 0.0.0.0/0 had been selected for 10.10.0.0/18 although it could be the default route. Because a more optimal route based on system metrics.
+
+#### 5.5. Making a router list
+Here is an example of the **traceroute** utility output after adding a gateway:
+```
+1 10.10.0.1 0 ms 1 ms 0 ms
+2 10.100.0.12 1 ms 0 ms 1 ms
+3 10.20.0.10 12 ms 1 ms 3 ms
+```
+##### Run the `tcpdump -tnv -i eth0` dump command on r1
+##### Use **traceroute** utility to list routers in the path from ws11 to ws21
+- Add a screenshots with the call and the output of the used commands (tcpdump and traceroute) to the report.
+- Based on the output of the dump on r1, explain in the report how path construction works using **traceroute**.
+
+#### 5.6. Using **ICMP** protocol in routing
+##### Run on r1 network traffic capture going through eth0 with the
+`tcpdump -n -i eth0 icmp` command.
+
+##### Ping a non-existent IP (e.g. *10.30.0.111*) from ws11 with the
+`ping -c 1 10.30.0.111` command.
+- Add a screenshot with the call and the output of the used commands to the report.
+
+##### Save dumps of the virtual machine images
+**p.s. Do not upload dumps to git under any circumstances!**
