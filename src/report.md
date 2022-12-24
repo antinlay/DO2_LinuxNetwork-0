@@ -295,3 +295,81 @@ Clone VM: \
 ![5.1.9](../misc/images/report_img/5.1.9.png)
 #### r2:
 ![5.1.10](../misc/images/report_img/5.1.10.png)
+
+#### 5.2. Enabling IP forwarding.
+##### To enable IP forwarding, run the following command on the routers:
+`sysctl -w net.ipv4.ip_forward=1`
+* r1:
+
+![5.2.1](../misc/images/report_img/5.2.1.png)
+
+* r2:
+
+![5.2.2](../misc/images/report_img/5.2.2.png)
+
+*With this approach, the forwarding will not work after the system is rebooted.*
+
+##### Open */etc/sysctl.conf* file and add the following line:
+`net.ipv4.ip_forward = 1`
+* r1:
+
+![5.2.3](../misc/images/report_img/5.2.3.png)
+
+* r2:
+
+![5.2.4](../misc/images/report_img/5.2.4.png)
+*With this approach, IP forwarding is enabled permanently.*
+When `ip_forward=0`, it thinks: "I don't know why this got sent to me and I don't really care. To the trash it goes!"
+
+With `ip_forward=1`, "Hmm, this is not for me. But I know where the recipient is, so I'll just resend it with the correct MAC address."
+
+#### 5.3. Default route configuration
+
+##### Configure the default route (gateway) for the workstations. To do this, add `default` before the router's IP in the configuration file
+#### ws11:
+![5.2.5](../misc/images/report_img/5.2.5.png)
+#### ws21:
+![5.2.6](../misc/images/report_img/5.2.6.png)
+#### ws22:
+![5.2.7](../misc/images/report_img/5.2.7.png)
+
+##### Call `ip r` and show that a route is added to the routing table
+#### ws11:
+![5.2.8](../misc/images/report_img/5.2.8.png)
+#### ws21:
+![5.2.9](../misc/images/report_img/5.2.9.png)
+#### ws22:
+![5.2.10](../misc/images/report_img/5.2.10.png)
+##### Ping r2 router from ws11 and show on r2 that the ping is reaching.
+
+#### ws11:
+![5.2.11](../misc/images/report_img/5.2.11.png)
+##### To do this, use the `tcpdump -tn -i eth1 icmp` filtered `icmp` because ssh connect send any more packets
+#### r2:
+![5.2.12](../misc/images/report_img/5.2.12.png)
+
+#### 5.4. Adding static routes
+##### Add static routes to r1 and r2 in configuration file. Here is an example for r1 route to 10.20.0.0/26:
+```shell
+# Add description to the end of the eth1 network interface:
+- to: 10.20.0.0
+  via: 10.100.0.12
+```
+#### r1:
+![5.4.1](../misc/images/report_img/5.4.1.png)
+#### r2:
+![5.4.2](../misc/images/report_img/5.4.2.png)
+
+##### Call `ip r` and show route tables on both routers. Here is an example of the r1 table:
+```
+10.100.0.0/16 dev eth1 proto kernel scope link src 10.100.0.11
+10.20.0.0/26 via 10.100.0.12 dev eth1
+10.10.0.0/18 dev eth0 proto kernel scope link src 10.10.0.1
+```
+#### r1:
+![5.4.3](../misc/images/report_img/5.4.3.png)
+#### r2:
+![5.4.4](../misc/images/report_img/5.4.4.png)
+##### Run `ip r list 10.10.0.0/[netmask]` and `ip r list 0.0.0.0/0` commands on ws11.
+![5.4.5](../misc/images/report_img/5.4.5.png)
+- Explain in the report why a different route other than 0.0.0.0/0 had been selected for 10.10.0.0/18 although it could be the default route. Because a more optimal route based on system metrics. 
