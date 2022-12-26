@@ -332,7 +332,7 @@ With `ip_forward=1`, "Hmm, this is not for me. But I know where the recipient is
 ![5.2.6](../misc/images/report_img/5.2.6.png)
 #### ws22:
 ![5.2.7](../misc/images/report_img/5.2.7.png)
-
+##### * `gateway4:` is old and now not use, but working
 ##### Call `ip r` and show that a route is added to the routing table
 #### ws11:
 ![5.2.8](../misc/images/report_img/5.2.8.png)
@@ -366,6 +366,7 @@ With `ip_forward=1`, "Hmm, this is not for me. But I know where the recipient is
 10.20.0.0/26 via 10.100.0.12 dev eth1
 10.10.0.0/18 dev eth0 proto kernel scope link src 10.10.0.1
 ```
+#### Output on revers sequence and i don't know why:
 #### r1:
 ![5.4.3](../misc/images/report_img/5.4.3.png)
 #### r2:
@@ -375,24 +376,56 @@ With `ip_forward=1`, "Hmm, this is not for me. But I know where the recipient is
 - Explain in the report why a different route other than 0.0.0.0/0 had been selected for 10.10.0.0/18 although it could be the default route. Because a more optimal route based on system metrics.
 
 #### 5.5. Making a router list
-Here is an example of the **traceroute** utility output after adding a gateway:
-```
-1 10.10.0.1 0 ms 1 ms 0 ms
-2 10.100.0.12 1 ms 0 ms 1 ms
-3 10.20.0.10 12 ms 1 ms 3 ms
-```
+
 ##### Run the `tcpdump -tnv -i eth0` dump command on r1
-##### Use **traceroute** utility to list routers in the path from ws11 to ws21
-- Add a screenshots with the call and the output of the used commands (tcpdump and traceroute) to the report.
-- Based on the output of the dump on r1, explain in the report how path construction works using **traceroute**.
+![5.5.1](../misc/images/report_img/5.5.2.png)
+![5.5.1](../misc/images/report_img/5.5.3.png)
+![5.5.1](../misc/images/report_img/5.5.4.png)
+![5.5.1](../misc/images/report_img/5.5.5.png)
+![5.5.1](../misc/images/report_img/5.5.6.png)
+**traceroute** utility output after adding a gateway to list routers in the path from ws11 to ws21
+
+![5.5.7](../misc/images/report_img/5.5.7.png)
+
+- Based on the output of the dump on r1, explain in the report how path construction works using **traceroute**: 
+
+`-t` don't print a timestamp on each dump line.
+`-n` don't  convert  addresses  (i.e.,  host addresses, port numbers, etc.) to names.
+`-v` when parsing and printing, produce (slightly more) verbose  output.
+`-i` listen on interface.
+
+Traceroute send packets with `TTL = 1` and each host doing `-=TTL`. Hence my gateway server will send me back a TTL Time exceeded message. On receiving this TTL Time exceeded message, my traceroute program will come to know the source address and other details about the first hop (Which is my gateway server).
+Next packet with `TTL = 2` This is because my gateway router will reduce it by 1 and then forwards that same packet which send to the next hop/router (the packet send by my gateway to its next hop will have a TTL value of 1). 
+On receiving UDP packet, the next hop to my gateway server will once again reduce it to 1 which means now the TTL has once again become 0. Hence it will send me back a ICMP Time exceeded message with its source address, and also the first 28 byte header of the packet which i send.
+On receiving that message of TTL Time Exceeded, my traceroute program will come to know about that hop/routers IP address and it will show that on my screen.
 
 #### 5.6. Using **ICMP** protocol in routing
 ##### Run on r1 network traffic capture going through eth0 with the
-`tcpdump -n -i eth0 icmp` command.
-
+`tcpdump -n -i eth0 icmp`
+![5.6.2](../misc/images/report_img/5.6.2.png)
 ##### Ping a non-existent IP (e.g. *10.30.0.111*) from ws11 with the
-`ping -c 1 10.30.0.111` command.
-- Add a screenshot with the call and the output of the used commands to the report.
+`ping -c 1 10.30.0.111`
+![5.6.1](../misc/images/report_img/5.6.1.png)
+
 
 ##### Save dumps of the virtual machine images
-**p.s. Do not upload dumps to git under any circumstances!**
+1) Get root
+`sudo su`
+
+2) List of VM for registration
+`vboxmanage list vms`
+
+3) Registration VM's
+`VBoxManage registervm '~/VirtualBox VMs/ws11/ws11.vbox' '~/VirtualBox VMs/ws21/ws21.vbox' '~/VirtualBox VMs/ws22/ws22.vbox' '~/VirtualBox VMs/r1/r1.vbox' '~/VirtualBox VMs/r2/r2.vbox'`
+
+4) Start VM's
+`vboxmanage startvm ws21 ws22 r1 r2`
+
+5) Save dump's
+ `cd ../ws21/; vboxmanage debugvm ws21 dumpvmcore --filename ws21_part5;
+ cd ../ws22/; vboxmanage debugvm ws22 dumpvmcore --filename ws22_part5;
+ cd ../ws11/; vboxmanage debugvm ws11 dumpvmcore --filename ws11_part5;
+ cd ../r1/; vboxmanage debugvm r1 dumpvmcore --filename r1_part5;
+ cd ../r2/; vboxmanage debugvm r2 dumpvmcore --filename r2_part5;`
+ 
+* Start VM's without GUI: `vboxmanage startvm ws11 ws21 ws22 r1 r2 --type headless`
