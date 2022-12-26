@@ -429,3 +429,51 @@ On receiving that message of TTL Time Exceeded, my traceroute program will come 
  cd ../r2/; vboxmanage debugvm r2 dumpvmcore --filename r2_part5;`
  
 * Start VM's without GUI: `vboxmanage startvm ws11 ws21 ws22 r1 r2 --type headless`
+
+## Part 6. Dynamic IP configuration using **DHCP**
+
+`-` Our next step is to learn more about **DHCP** service, which you already know.
+
+**== Task ==**
+
+*In this task you need to use virtual machines from Part 5*
+
+##### For r2, configure the **DHCP** service in the */etc/dhcp/dhcpd.conf* file:
+
+##### 1) specify the default router address, DNS-server and internal network address. Here is an example of a file for r2:
+```shell
+subnet 10.100.0.0 netmask 255.255.0.0 {}
+
+subnet 10.20.0.0 netmask 255.255.255.192
+{
+    range 10.20.0.2 10.20.0.50;
+    option routers 10.20.0.1;
+    option domain-name-servers 10.20.0.1;
+}
+```
+![6.1.1](../misc/images/report_img/6.1.1.png)
+##### 2) Write `nameserver 8.8.8.8.` in a *resolv.conf* file
+![6.2.0](../misc/images/report_img/6.2.0.png)
+##### Restart the **DHCP** service with `systemctl restart isc-dhcp-server`.
+![6.2.1](../misc/images/report_img/6.2.7.png)
+##### Reboot the ws21 machine with `reboot` and show with `ip a` that it has got an address.
+![6.2.1](../misc/images/report_img/6.2.1.png)
+##### Also ping ws22 from ws21.
+![6.2.2](../misc/images/report_img/6.2.2.png)
+
+##### Specify MAC address at ws11 by adding to *etc/netplan/00-installer-config.yaml*:
+`macaddress: 10:10:10:10:10:BA`, `dhcp4: true`
+* ws11:
+
+![6.2.3](../misc/images/report_img/6.2.3.png)
+
+##### Сonfigure r1 the same way as r2, but make the assignment of addresses strictly linked to the MAC-address (ws11). Run the same tests
+![6.2.6](../misc/images/report_img/6.2.6.png)
+![6.2.1](../misc/images/report_img/6.2.5.png)
+- Describe this part in the report the same way as for r2.
+##### Request ip address update from ws21
+- Add screenshots of ip before and after update to the report
+- Describe in the report what **DHCP** server options were used in this point.
+
+##### Save dumps of virtual machine images
+**p.s. Do not upload dumps to git under any circumstances!**
