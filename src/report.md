@@ -258,7 +258,6 @@ iptables -A OUTPUT -p icmp --icmp-type echo-reply -j DROP
 
 `-` So far we have only connected two machines, but now it's time for static routing of the whole network.
 
-**== Task ==**
 
 Network: \
 <img src="../misc/images/part5_network.png" alt="part5_network" width="800"/>
@@ -270,6 +269,8 @@ Minimal config for VM: \
 
 Clone VM: \
 <img src="../misc/images/report_img/5.0.png"/>
+
+### !! BEFORE EXECUTING MAKE SURE DIFFERENCE VM'S MAC-ADDRESSES
 
 #### 5.1. Configuration of machine addresses
 ##### Set up the machine configurations in *etc/netplan/00-installer-config.yaml* according to the network in the picture.
@@ -332,7 +333,7 @@ With `ip_forward=1`, "Hmm, this is not for me. But I know where the recipient is
 ![5.2.6](../misc/images/report_img/5.2.6.png)
 #### ws22:
 ![5.2.7](../misc/images/report_img/5.2.7.png)
-##### * `gateway4:` is old and now not use, but working
+##### * `gateway4:` is old and now not use (but work)
 ##### Call `ip r` and show that a route is added to the routing table
 #### ws11:
 ![5.2.8](../misc/images/report_img/5.2.8.png)
@@ -433,10 +434,6 @@ On receiving that message of TTL Time Exceeded, my traceroute program will come 
 ## Part 6. Dynamic IP configuration using **DHCP**
 
 `-` Our next step is to learn more about **DHCP** service, which you already know.
-
-**== Task ==**
-
-*In this task you need to use virtual machines from Part 5*
 
 ##### For r2, configure the **DHCP** service in the */etc/dhcp/dhcpd.conf* file:
 
