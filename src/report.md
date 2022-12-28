@@ -435,6 +435,16 @@ On receiving that message of TTL Time Exceeded, my traceroute program will come 
 
 `-` Our next step is to learn more about **DHCP** service, which you already know.
 
+##### First step install DHCP server:
+
+`apt install isc-dhcp-server`
+
+##### If you have more one interface (example first enp0s3 - internet connection):
+
+*/etc/default/isc-dhcp-server* open on editor and change:
+
+`INTERFACESv4="enp0s8"`, `INTERFACESv6="enp0s8"`
+
 ##### For r2, configure the **DHCP** service in the */etc/dhcp/dhcpd.conf* file:
 
 ##### 1) specify the default router address, DNS-server and internal network address. Here is an example of a file for r2:
@@ -448,28 +458,39 @@ subnet 10.20.0.0 netmask 255.255.255.192
     option domain-name-servers 10.20.0.1;
 }
 ```
-![6.1.1](../misc/images/report_img/6.1.1.png)
-##### 2) Write `nameserver 8.8.8.8.` in a *resolv.conf* file
-![6.2.0](../misc/images/report_img/6.2.0.png)
-##### Restart the **DHCP** service with `systemctl restart isc-dhcp-server`.
-![6.2.1](../misc/images/report_img/6.2.7.png)
-##### Reboot the ws21 machine with `reboot` and show with `ip a` that it has got an address.
 ![6.2.1](../misc/images/report_img/6.2.1.png)
-##### Also ping ws22 from ws21.
+##### 2) Write `nameserver 8.8.8.8.` in a *resolv.conf* file
 ![6.2.2](../misc/images/report_img/6.2.2.png)
+##### Restart the **DHCP** service with `systemctl restart isc-dhcp-server`.
+![6.2.3](../misc/images/report_img/6.2.3.png)
+##### Reboot the ws21 machine with `reboot` and show with `ip a` that it has got an address.
+![6.2.4](../misc/images/report_img/6.2.4.png)
+##### Also ping ws22 from ws21.
+![6.2.5](../misc/images/report_img/6.2.5.png)
 
 ##### Specify MAC address at ws11 by adding to *etc/netplan/00-installer-config.yaml*:
 `macaddress: 10:10:10:10:10:BA`, `dhcp4: true`
 * ws11:
 
-![6.2.3](../misc/images/report_img/6.2.3.png)
-
-##### Сonfigure r1 the same way as r2, but make the assignment of addresses strictly linked to the MAC-address (ws11). Run the same tests
 ![6.2.6](../misc/images/report_img/6.2.6.png)
-![6.2.1](../misc/images/report_img/6.2.5.png)
-- Describe this part in the report the same way as for r2.
-##### Request ip address update from ws21
-- Add screenshots of ip before and after update to the report
+
+##### Сonfigure r1 the same way as r2, but make the assignment of addresses strictly linked to the MAC-address (ws11).
+![6.2.7](../misc/images/report_img/6.2.7.png)
+##### Run the same tests
+##### Restart the **DHCP** service with `systemctl restart isc-dhcp-server`.
+![6.2.8](../misc/images/report_img/6.2.8.png)
+
+##### Reboot the ws11 machine with `reboot` and show with `ip a` that it has got an address:
+![6.2.9](../misc/images/report_img/6.2.9.png)
+##### Also ping ws11 from r1:
+![6.2.10](../misc/images/report_img/6.2.10.png)
+
+##### Request ip address update from ws21:
+![6.2.11](../misc/images/report_img/6.2.11.png)
+##### ip before:
+![6.2.12](../misc/images/report_img/6.2.12.png)
+##### and after command `dhclient -v`:
+![6.2.13](../misc/images/report_img/6.2.13.png)
 - Describe in the report what **DHCP** server options were used in this point.
 
 ##### Save dumps of virtual machine images
