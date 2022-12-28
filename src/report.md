@@ -470,19 +470,20 @@ subnet 10.20.0.0 netmask 255.255.255.192
 
 ##### Specify MAC address at ws11 by adding to *etc/netplan/00-installer-config.yaml*:
 `macaddress: 10:10:10:10:10:BA`, `dhcp4: true`
-* ws11:
 
+##### ws11:
 ![6.2.6](../misc/images/report_img/6.2.6.png)
 
 ##### Сonfigure r1 the same way as r2, but make the assignment of addresses strictly linked to the MAC-address (ws11).
 ![6.2.7](../misc/images/report_img/6.2.7.png)
+
 ##### Run the same tests
 ##### Restart the **DHCP** service with `systemctl restart isc-dhcp-server`.
 ![6.2.8](../misc/images/report_img/6.2.8.png)
 
 ##### Reboot the ws11 machine with `reboot` and show with `ip a` that it has got an address:
 ![6.2.9](../misc/images/report_img/6.2.9.png)
-##### Also ping ws11 from r1:
+##### Also ping r1 from ws1:
 ![6.2.10](../misc/images/report_img/6.2.10.png)
 
 ##### Request ip address update from ws21:
@@ -492,6 +493,10 @@ subnet 10.20.0.0 netmask 255.255.255.192
 ##### and after command `dhclient -v`:
 ![6.2.13](../misc/images/report_img/6.2.13.png)
 - Describe in the report what **DHCP** server options were used in this point.
+
+* `option routers [10.0.0.0,...]` the routers option specifies a list of IP addresses for routers on the client's subnet. Routers should be listed in order of preference
+
+* `option domain-name-servers [10.0.0.0, ...]` domain-name-servers option specifies a list of Domain Name System (STD 13, RFC 1035) name servers available to the client. Servers should be listed in order of preference.
 
 ##### Save dumps of virtual machine images
 **p.s. Do not upload dumps to git under any circumstances!**
