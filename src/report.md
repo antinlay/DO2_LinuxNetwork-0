@@ -420,14 +420,10 @@ On receiving that message of TTL Time Exceeded, my traceroute program will come 
 `VBoxManage registervm '~/VirtualBox VMs/ws11/ws11.vbox' '~/VirtualBox VMs/ws21/ws21.vbox' '~/VirtualBox VMs/ws22/ws22.vbox' '~/VirtualBox VMs/r1/r1.vbox' '~/VirtualBox VMs/r2/r2.vbox'`
 
 4) Start VM's
-`vboxmanage startvm ws21 ws22 r1 r2`
+`vboxmanage startvm ws11 ws21 ws22 r1 r2`
 
 5) Save dump's
- `cd ../ws21/; vboxmanage debugvm ws21 dumpvmcore --filename ws21_part5;
- cd ../ws22/; vboxmanage debugvm ws22 dumpvmcore --filename ws22_part5;
- cd ../ws11/; vboxmanage debugvm ws11 dumpvmcore --filename ws11_part5;
- cd ../r1/; vboxmanage debugvm r1 dumpvmcore --filename r1_part5;
- cd ../r2/; vboxmanage debugvm r2 dumpvmcore --filename r2_part5;`
+ `cd ../ws21/; vboxmanage snapshot ws21 take ws21_part5; cd ../ws22/; vboxmanage snapshot ws22 take ws22_part5; cd ../ws11/; vboxmanage snapshot ws11 take ws11_part5; cd ../r1/; vboxmanage snapshot r1 take r1_part5; cd ../r2/; vboxmanage snapshot r2 take r2_part5;`
  
 * Start VM's without GUI: `vboxmanage startvm ws11 ws21 ws22 r1 r2 --type headless`
 
@@ -499,4 +495,46 @@ subnet 10.20.0.0 netmask 255.255.255.192
 * `option domain-name-servers [10.0.0.0, ...]` domain-name-servers option specifies a list of Domain Name System (STD 13, RFC 1035) name servers available to the client. Servers should be listed in order of preference.
 
 ##### Save dumps of virtual machine images
+`cd ../ws21/; vboxmanage snapshot ws21 take ws21_part6; cd ../ws22/; vboxmanage snapshot ws22 take ws22_part6; cd ../ws11/; vboxmanage snapshot ws11 take ws11_part6; cd ../r1/; vboxmanage snapshot r1 take r1_part6; cd ../r2/; vboxmanage snapshot r2 take r2_part6;`
+
+## Part 7. **NAT**
+
+##### In */etc/apache2/ports.conf* file change the line `Listen 80` to `Listen 0.0.0.0:80`on ws22 and r1, i.e. make the Apache2 server public
+##### ws22:
+![7.1.1](../misc/images/report_img/7.1.1.png)
+##### r1:
+![7.1.2](../misc/images/report_img/7.1.2.png)
+##### Start the Apache web server with `service apache2 start` command on ws22:
+![7.1.3](../misc/images/report_img/7.1.3.png)
+##### and r1:
+![7.1.4](../misc/images/report_img/7.1.4.png)
+
+##### Add the following rules to the firewall, created similarly to the firewall from Part 4, on r2:
+##### 1) Delete rules in the filter table - `iptables -F`
+##### 2) Delete rules in the "NAT" table - `iptables -F -t nat`
+##### 3) Drop all routed packets - `iptables --policy FORWARD DROP`
+##### Run the file as in Part 4
+##### Check the connection between ws22 and r1 with the `ping` command
+*When running the file with these rules, ws22 should not ping from r1*
+- Add screenshots with the call and the output of the used command to the report.
+##### Add another rule to the file:
+##### 4) Allow routing of all **ICMP** protocol packets
+##### Run the file as in Part 4
+##### Check connection between ws22 and r1 with the `ping` command
+*When running the file with these rules, ws22 should ping from r1*
+- Add screenshots with the call and the output of the used command to the report.
+##### Add two more rules to the file:
+##### 5) Enable **SNAT**, which is masquerade all local ip from the local network behind r2 (as defined in Part 5 - network 10.20.0.0)
+*Tip: it is worth thinking about routing internal packets as well as external packets with an established connection*
+##### 6) Enable **DNAT** on port 8080 of r2 machine and add external network access to the Apache web server running on ws22
+*Tip: be aware that when you will try to connect, there will be a new tcp connection for ws22 and port 80
+- Add a screenshot of the changed file to the report
+##### Run the file as in Part 4
+*Before testing it is recommended to disable the **NAT** network interface in VirtualBox (its presence can be checked with `ip a` command), if it is enabled*
+##### Check the TCP connection for **SNAT** by connecting from ws22 to the Apache server on r1 with the `telnet [address] [port]` command
+##### Check the TCP connection for **DNAT** by connecting from r1 to the Apache server on ws22 with the `telnet` command (address r2 and port 8080)
+- Add screenshots with the call and the output of the used commands to the report.
+
+##### Save dumps of virtual machine images
 **p.s. Do not upload dumps to git under any circumstances!**
+
