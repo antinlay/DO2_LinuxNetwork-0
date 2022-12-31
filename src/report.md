@@ -513,28 +513,33 @@ subnet 10.20.0.0 netmask 255.255.255.192
 ##### 1) Delete rules in the filter table - `iptables -F`
 ##### 2) Delete rules in the "NAT" table - `iptables -F -t nat`
 ##### 3) Drop all routed packets - `iptables --policy FORWARD DROP`
+![7.1.5](../misc/images/report_img/7.1.5.png)
 ##### Run the file as in Part 4
+![7.1.6](../misc/images/report_img/7.1.6.png)
 ##### Check the connection between ws22 and r1 with the `ping` command
 *When running the file with these rules, ws22 should not ping from r1*
-- Add screenshots with the call and the output of the used command to the report.
+![7.1.7](../misc/images/report_img/7.1.7.png)
 ##### Add another rule to the file:
 ##### 4) Allow routing of all **ICMP** protocol packets
+![7.1.8](../misc/images/report_img/7.1.8.png)
 ##### Run the file as in Part 4
+![7.1.9](../misc/images/report_img/7.1.9.png)
 ##### Check connection between ws22 and r1 with the `ping` command
 *When running the file with these rules, ws22 should ping from r1*
-- Add screenshots with the call and the output of the used command to the report.
+![7.1.10](../misc/images/report_img/7.1.10.png)
 ##### Add two more rules to the file:
 ##### 5) Enable **SNAT**, which is masquerade all local ip from the local network behind r2 (as defined in Part 5 - network 10.20.0.0)
 *Tip: it is worth thinking about routing internal packets as well as external packets with an established connection*
 ##### 6) Enable **DNAT** on port 8080 of r2 machine and add external network access to the Apache web server running on ws22
 *Tip: be aware that when you will try to connect, there will be a new tcp connection for ws22 and port 80
-- Add a screenshot of the changed file to the report
+![7.1.14](../misc/images/report_img/7.1.14.png)
 ##### Run the file as in Part 4
+![7.1.13](../misc/images/report_img/7.1.13.png)
 *Before testing it is recommended to disable the **NAT** network interface in VirtualBox (its presence can be checked with `ip a` command), if it is enabled*
-##### Check the TCP connection for **SNAT** by connecting from ws22 to the Apache server on r1 with the `telnet [address] [port]` command
-##### Check the TCP connection for **DNAT** by connecting from r1 to the Apache server on ws22 with the `telnet` command (address r2 and port 8080)
-- Add screenshots with the call and the output of the used commands to the report.
+##### Check the TCP connection for **SNAT** by connecting from ws22 to the Apache server on r1 with the `telnet 10.10.0.1 80` command
+![7.1.15](../misc/images/report_img/7.1.15.png)
+##### Check the TCP connection for **DNAT** by connecting from r1 to the Apache server on ws22 with the `telnet 10.100.0.12 8080` 
+![7.1.15](../misc/images/report_img/7.1.16.png)
 
 ##### Save dumps of virtual machine images
-**p.s. Do not upload dumps to git under any circumstances!**
 
