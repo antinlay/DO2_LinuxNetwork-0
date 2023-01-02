@@ -48,7 +48,7 @@ IP localhosts on ranges [127.0.0.1 - 127.255.255.254]
 |10.10.10.10|192.169.168.1|
 
 #### 2) which of the listed gateway IP addresses are possible for 10.10.0.0/18 network: 10.0.0.1, 10.10.0.2, 10.10.10.10, 10.10.100.1, 10.10.1.255
-Access IP range: 10.10.0.1 - 10.10.63.254
+##### Access IP range: 10.10.0.1 - 10.10.63.254
 ![1.1.4.2](../misc/images/report_img/1.1.4.2.png)
 
 |IP|ACCESS|
@@ -60,12 +60,12 @@ Access IP range: 10.10.0.1 - 10.10.63.254
 |10.10.1.255|TRUE|
 
 ## Part 2. Static routing between two machines
-#### Start two virtual machines (hereafter -- ws1 and ws2 View existing network interfaces with the ip a command
+#### Start two virtual machines (hereafter -- ws1 and ws2. View existing network interfaces with the `ip a` command
 ![2.0.1](../misc/images/report_img/2.0.1.png)
 
 * enp0s3 name interface for ws1 and ws2
 
-#### Describe the network interface corresponding to the internal network on both machines and set the following addresses and masks: ws1 - 192.168.100.10, mask */16 *, ws2 - 172.24.116.8, mask /12
+#### Describe the network interface corresponding to the internal network on both machines and set the following addresses and masks: ws1 - 192.168.100.10, mask /16, ws2 - 172.24.116.8, mask /12
 
 `sudo nano etc/netplan/00-installer-config.yaml`
 * ws1:
@@ -122,7 +122,7 @@ Access IP range: 10.10.0.1 - 10.10.63.254
 
 ![2.2.3](../misc/images/report_img/2.2.3.png)
 
-* ws2 : `sudo ip route flush table main` `sudo ip route flush cache` `sudo netplan apply` `ping 192.168.100.10` (`ip route` commands for apply settings without restart network service)
+* ws2 : `sudo ip route flush table main;` `sudo ip route flush cache;` `sudo netplan apply;` `ping 192.168.100.10;` (`ip route; ` commands for apply settings without restart network service)
 
 ![2.2.4](../misc/images/report_img/2.2.4.png)
 
@@ -237,8 +237,6 @@ iptables -A OUTPUT -p icmp --icmp-type echo-reply -j DROP
 
 ![0.5](../misc/images/report_img/0.5.png)
 
-##### Ready! Lat's go to part 4.2
-
 #### 4.2. **nmap** utility
 
 `apt install nmap`
@@ -247,12 +245,9 @@ iptables -A OUTPUT -p icmp --icmp-type echo-reply -j DROP
 
 ![4.2.1](../misc/images/report_img/4.2.1.png)
 
-
-
 - Add screenshots with the call and output of the **ping** and **nmap** commands to the report.
 
 ##### Save dumps of the virtual machine images
-**p.s. Do not upload dumps to git under any circumstances!**
 
 ## Part 5. Static network routing
 
@@ -319,6 +314,7 @@ Clone VM: \
 * r2:
 
 ![5.2.4](../misc/images/report_img/5.2.4.png)
+
 *With this approach, IP forwarding is enabled permanently.*
 When `ip_forward=0`, it thinks: "I don't know why this got sent to me and I don't really care. To the trash it goes!"
 
@@ -374,7 +370,9 @@ With `ip_forward=1`, "Hmm, this is not for me. But I know where the recipient is
 ![5.4.4](../misc/images/report_img/5.4.4.png)
 ##### Run `ip r list 10.10.0.0/[netmask]` and `ip r list 0.0.0.0/0` commands on ws11.
 ![5.4.5](../misc/images/report_img/5.4.5.png)
-- Explain in the report why a different route other than 0.0.0.0/0 had been selected for 10.10.0.0/18 although it could be the default route. Because a more optimal route based on system metrics.
+
+- Explain in the report why a different route other than 0.0.0.0/0 had been selected for 10.10.0.0/18 although it could be the default route: 
+Because a more optimal route on this network based on system metrics.
 
 #### 5.5. Making a router list
 
@@ -384,6 +382,7 @@ With `ip_forward=1`, "Hmm, this is not for me. But I know where the recipient is
 ![5.5.1](../misc/images/report_img/5.5.4.png)
 ![5.5.1](../misc/images/report_img/5.5.5.png)
 ![5.5.1](../misc/images/report_img/5.5.6.png)
+
 **traceroute** utility output after adding a gateway to list routers in the path from ws11 to ws21
 
 ![5.5.7](../misc/images/report_img/5.5.7.png)
@@ -402,10 +401,10 @@ On receiving that message of TTL Time Exceeded, my traceroute program will come 
 
 #### 5.6. Using **ICMP** protocol in routing
 ##### Run on r1 network traffic capture going through eth0 with the
-`tcpdump -n -i eth0 icmp`
+#####  `tcpdump -n -i eth0 icmp`
 ![5.6.2](../misc/images/report_img/5.6.2.png)
 ##### Ping a non-existent IP (e.g. *10.30.0.111*) from ws11 with the
-`ping -c 1 10.30.0.111`
+##### `ping -c 1 10.30.0.111`
 ![5.6.1](../misc/images/report_img/5.6.1.png)
 
 
@@ -488,6 +487,7 @@ subnet 10.20.0.0 netmask 255.255.255.192
 ![6.2.12](../misc/images/report_img/6.2.12.png)
 ##### and after command `dhclient -v`:
 ![6.2.13](../misc/images/report_img/6.2.13.png)
+
 - Describe in the report what **DHCP** server options were used in this point.
 
 * `option routers [10.0.0.0,...]` the routers option specifies a list of IP addresses for routers on the client's subnet. Routers should be listed in order of preference
@@ -518,6 +518,7 @@ subnet 10.20.0.0 netmask 255.255.255.192
 ![7.1.6](../misc/images/report_img/7.1.6.png)
 ##### Check the connection between ws22 and r1 with the `ping` command
 *When running the file with these rules, ws22 should not ping from r1*
+
 ![7.1.7](../misc/images/report_img/7.1.7.png)
 ##### Add another rule to the file:
 ##### 4) Allow routing of all **ICMP** protocol packets
@@ -526,15 +527,18 @@ subnet 10.20.0.0 netmask 255.255.255.192
 ![7.1.9](../misc/images/report_img/7.1.9.png)
 ##### Check connection between ws22 and r1 with the `ping` command
 *When running the file with these rules, ws22 should ping from r1*
+
 ![7.1.10](../misc/images/report_img/7.1.10.png)
 ##### Add two more rules to the file:
 ##### 5) Enable **SNAT**, which is masquerade all local ip from the local network behind r2 (as defined in Part 5 - network 10.20.0.0)
 *Tip: it is worth thinking about routing internal packets as well as external packets with an established connection*
 ##### 6) Enable **DNAT** on port 8080 of r2 machine and add external network access to the Apache web server running on ws22
 *Tip: be aware that when you will try to connect, there will be a new tcp connection for ws22 and port 80
+
 ![7.1.14](../misc/images/report_img/7.1.14.png)
 ##### Run the file as in Part 4
 ![7.1.13](../misc/images/report_img/7.1.13.png)
+
 *Before testing it is recommended to disable the **NAT** network interface in VirtualBox (its presence can be checked with `ip a` command), if it is enabled*
 ##### Check the TCP connection for **SNAT** by connecting from ws22 to the Apache server on r1 with the `telnet 10.10.0.1 80` command
 ![7.1.15](../misc/images/report_img/7.1.15.png)
