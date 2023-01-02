@@ -539,7 +539,26 @@ subnet 10.20.0.0 netmask 255.255.255.192
 ##### Check the TCP connection for **SNAT** by connecting from ws22 to the Apache server on r1 with the `telnet 10.10.0.1 80` command
 ![7.1.15](../misc/images/report_img/7.1.15.png)
 ##### Check the TCP connection for **DNAT** by connecting from r1 to the Apache server on ws22 with the `telnet 10.100.0.12 8080` 
-![7.1.15](../misc/images/report_img/7.1.16.png)
+![7.1.16](../misc/images/report_img/7.1.16.png)
 
 ##### Save dumps of virtual machine images
 
+## Part 8. Bonus. Introduction to **SSH Tunnels**
+
+##### Run a firewall on r2 with the rules from Part 7
+![7.1.13](../misc/images/report_img/7.1.13.png)
+##### Start the **Apapche** web server on ws22 on localhost
+![8.1](../misc/images/report_img/8.1.png)
+##### only (i.e. in */etc/apache2/ports.conf* file change the line `Listen 80` to `Listen localhost:80`)
+![8.0](../misc/images/report_img/8.0.png)
+##### Use *Local TCP forwarding* from ws21 to ws22 to access the web server on ws22 from ws21
+![8.4](../misc/images/report_img/8.4.png)
+##### Use *Remote TCP forwarding* from ws11 to ws22 to access the web server on ws22 from ws11
+![8.4](../misc/images/report_img/8.2.png)
+##### To check if the connection worked in both of the previous steps, go to a second terminal (e.g. with the Alt + F2) and run the `telnet 127.0.0.1 [local port]` command.
+##### ws11:
+![8.3](../misc/images/report_img/8.3.png)
+##### ws21:
+![8.5](../misc/images/report_img/8.5.png)
+
+##### Save dumps of virtual machine images
